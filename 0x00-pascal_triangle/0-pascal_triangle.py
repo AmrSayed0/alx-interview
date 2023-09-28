@@ -1,10 +1,6 @@
-#!/usr/bin/python3
-"""
-This script defines a function to generate Pascal's Triangle.
-"""
+from typing import List
 
-
-def pascal_triangle(n):
+def pascal_triangle(n: int) -> List[List[int]]:
     """
     Generate Pascal's Triangle up to the nth row.
 
@@ -16,7 +12,7 @@ def pascal_triangle(n):
     """
     # Check if the input is a positive integer
     if not isinstance(n, int) or n <= 0:
-        return []
+        raise ValueError("n must be a positive integer")
 
     triangle = []
     for i in range(n):
