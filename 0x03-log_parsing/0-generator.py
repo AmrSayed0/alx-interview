@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-'''This module contains a script that reads stdin line by line and computes'''
 import random
 import sys
 import datetime
