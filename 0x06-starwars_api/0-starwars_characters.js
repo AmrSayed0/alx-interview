@@ -1,22 +1,33 @@
 #!/usr/bin/node
-const request = require("request");
+const request = require('request');
 
-const endpoint = "https://swapi-api.hbtn.io/api";
-const filmId = process.argv[2];
+const movieId = process.argv[2];
 
-request(`${endpoint}/films/${filmId}/`, async function (error, response, body) {
-  if (error) return console.log(error);
+if (!movieId) {
+  console.error('Please provide a Movie ID as a command line argument.');
+  process.exit(1);
+}
 
-  const characters = JSON.parse(body).characters;
+const apiUrl = `https://swapi.dev/api/films/${movieId}/`;
 
-  for (const character of characters) {
-    await new Promise((resolve, reject) => {
-      request(character, (error, response, body) => {
-        if (error) {
-          reject(error);
+request(apiUrl, (error, response, body) => {
+  if (error) {
+    console.error('Error:', error);
+  } else if (response.statusCode !== 200) {
+    console.error('Invalid response:', response.statusCode);
+  } else {
+    const movieData = JSON.parse(body);
+    const characters = movieData.characters;
+
+    characters.forEach((characterUrl) => {
+      request(characterUrl, (charError, charResponse, charBody) => {
+        if (charError) {
+          console.error('Error fetching character:', charError);
+        } else if (charResponse.statusCode !== 200) {
+          console.error('Invalid character response:', charResponse.statusCode);
         } else {
-          console.log(JSON.parse(body).name);
-          resolve(body);
+          const characterData = JSON.parse(charBody);
+          console.log(characterData.name);
         }
       });
     });
